@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arctic Frost Slots</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-light: #1e293b;
+            --primary: #38bdf8; /* Light Blue */
+            --accent: #0ea5e9; /* Sky Blue */
+            --glass: rgba(30, 41, 59, 0.7);
+            --border: #475569;
+            --text: #f0f9ff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.1) 0%, transparent 20%);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Prevent scroll on bounce */
+        }
+
+        /* Snowfall Effect (Simple CSS Background) */
+        .snow-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0));
+            background-size: 200px 200px;
+            animation: snow 10s linear infinite;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        @keyframes snow {
+            0% { background-position: 0px 0px; }
+            100% { background-position: 100px 200px; }
+        }
+
+        .machine-container {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow:
+                0 0 40px rgba(56, 189, 248, 0.2),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 0;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+        }
+
+        .stats-panel {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        .slots-window {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            background: #020617;
+            padding: 15px;
+            border-radius: 16px;
+            border: 2px solid #334155;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px #000;
+        }
+
+        /* Glare line across glass */
+        .slots-window::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 40%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .reel {
+            flex: 1;
+            height: 120px;
+            background: linear-gradient(to bottom, #1e293b, #0f172a);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            border: 1px solid #334155;
+            position: relative;
+            transition: transform 0.1s;
+        }
+
+        /* Spin Blur Effect */
+        .reel.spinning span {
+            filter: blur(4px);
+            opacity: 0.8;
+            display: block;
+            transform: scale(0.9);
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .bet-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        input[type="number"] {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--primary);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            width: 80px;
+            text-align: center;
+            font-size: 1.2rem;
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(135deg, #38bdf8, #2563eb);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(37, 99, 235, 0.4);
+            filter: brightness(1.1);
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 5px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        button:disabled {
+            background: #334155;
+            color: #64748b;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #status-message {
+            min-height: 24px;
+            margin-top: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+        }
+
+        /* Win Animations */
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); filter: brightness(1.5); }
+            100% { transform: scale(1); }
+        }
+
+        .win-text {
+            animation: pop 0.5s ease-in-out;
+            color: var(--primary) !important;
+            text-shadow: 0 0 20px var(--primary);
+        }
+
+        .legend {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: #64748b;
+            text-align: left;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 15px;
+        }
+        .legend-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="snow-bg"></div>
+
+    <div class="machine-container">
+        <h1>Arctic Frost</h1>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <span class="stat-label">Balance</span>
+                <span id="balance" class="stat-value">10000</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Current Bet</span>
+                <span id="currentBetDisplay" class="stat-value" style="color: var(--primary)">0</span>
+            </div>
+        </div>
+
+        <div class="slots-window">
+            <div class="reel" id="reel1"><span>❄️</span></div>
+            <div class="reel" id="reel2"><span>💎</span></div>
+            <div class="reel" id="reel3"><span>7️⃣</span></div>
+        </div>
+
+        <div class="controls">
+            <div class="bet-container">
+                <label>BET AMOUNT (MAX 100)</label>
+                <input type="number" id="betInput" value="50" min="1" max="100">
+            </div>
+            <button id="spinBtn" onclick="startSpin()">SPIN REELS</button>
+        </div>
+
+        <div id="status-message">Good Luck!</div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <span>7️⃣ 7️⃣ 7️⃣</span>
+                <span style="color: #facc15">Double Balance (5%)</span>
+            </div>
+            <div class="legend-item">
+                <span>💎 💎 💎</span>
+                <span style="color: #38bdf8">+5,000 Pts (10%)</span>
+            </div>
+            <div class="legend-item">
+                <span>❄️ ❄️ ❄️</span>
+                <span style="color: white">+500 Pts (25%)</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let balance = 10000;
+        const maxBet = 100;
+        let isSpinning = false;
+
+        const symbols = ['🍒', '🍋', '🔔', '🍇', '❄️', '💎', '7️⃣'];
+        const reels = [
+            document.getElementById('reel1'),
+            document.getElementById('reel2'),
+            document.getElementById('reel3')
+        ];
+        const balanceEl = document.getElementById('balance');
+        const betDisplayEl = document.getElementById('currentBetDisplay');
+        const messageEl = document.getElementById('status-message');
+        const spinBtn = document.getElementById('spinBtn');
+
+        // Interval IDs for the spin animation
+        let spinIntervals = [null, null, null];
+
+        function updateUI() {
+            balanceEl.textContent = Math.floor(balance).toLocaleString();
+        }
+
+        function getRandomSymbol() {
+            return symbols[Math.floor(Math.random() * symbols.length)];
+        }
+
+        function startSpin() {
+            if (isSpinning) return;
+
+            const betInput = document.getElementById('betInput');
+            let bet = parseInt(betInput.value);
+
+            // Validation
+            if (isNaN(bet) || bet <= 0) {
+                showStatus("Invalid bet!", "red");
+                return;
+            }
+            if (bet > maxBet) {
+                showStatus("Max bet is 100!", "red");
+                return;
+            }
+            if (bet > balance) {
+                showStatus("Insufficient funds!", "red");
+                return;
+            }
+
+            // Start Game
+            isSpinning = true;
+            spinBtn.disabled = true;
+            balance -= bet;
+            betDisplayEl.textContent = bet;
+            updateUI();
+            showStatus("Spinning...", "#38bdf8");
+
+            // Determine Result Immediately (The "Rig")
+            const result = calculateResult(bet);
+            const targetSymbols = result.symbols;
+            const reward = result.reward;
+            const type = result.type;
+
+            // Start Animations
+            reels.forEach((reel, index) => {
+                reel.classList.add('spinning');
+                // Rapidly change symbols to simulate speed
+                spinIntervals[index] = setInterval(() => {
+                    reel.querySelector('span').innerText = getRandomSymbol();
+                }, 60);
+            });
+
+            // Stop reels one by one (Cascading effect)
+            // Reel 1 stops at 1000ms
+            setTimeout(() => stopReel(0, targetSymbols[0]), 1000);
+            // Reel 2 stops at 1800ms
+            setTimeout(() => stopReel(1, targetSymbols[1]), 1800);
+            // Reel 3 stops at 2600ms
+            setTimeout(() => {
+                stopReel(2, targetSymbols[2]);
+                endGame(reward, type, bet);
+            }, 2600);
+        }
+
+        function stopReel(index, finalSymbol) {
+            clearInterval(spinIntervals[index]);
+            const reel = reels[index];
+            reel.classList.remove('spinning');
+            reel.querySelector('span').innerText = finalSymbol;
+
+            // Little bounce effect via CSS class injection
+            reel.style.transform = "scale(1.1)";
+            setTimeout(() => reel.style.transform = "scale(1)", 200);
+        }
+
+        function calculateResult(bet) {
+            const r = Math.random(); // 0.0 to 1.0
+
+            // Logic Hierarchy
+
+            // 1. THE BLIZZARD (777) - 5% Chance - Double Balance
+            if (r < 0.05) {
+                return {
+                    symbols: ['7️⃣', '7️⃣', '7️⃣'],
+                    reward: "DOUBLE",
+                    type: 'JACKPOT'
+                };
+            }
+
+            // 2. DIAMOND ICE (Diamonds) - 10% Chance (0.05 to 0.15) - +5000
+            if (r < 0.15) {
+                return {
+                    symbols: ['💎', '💎', '💎'],
+                    reward: 5000,
+                    type: 'BIG_WIN'
+                };
+            }
+
+            // 3. SNOW FLURRY (Snowflakes) - 25% Chance (0.15 to 0.40) - +500
+            if (r < 0.40) {
+                return {
+                    symbols: ['❄️', '❄️', '❄️'],
+                    reward: 500,
+                    type: 'WIN'
+                };
+            }
+
+            // 4. LOSS - 60% Chance - Generate random losing combo
+            let lossSymbols;
+            do {
+                lossSymbols = [getRandomSymbol(), getRandomSymbol(), getRandomSymbol()];
+            } while (
+                (lossSymbols[0] === lossSymbols[1] && lossSymbols[1] === lossSymbols[2]) // Avoid accidental win
+            );
+
+            return {
+                symbols: lossSymbols,
+                reward: 0,
+                type: 'LOSS'
+            };
+        }
+
+        function endGame(reward, type, bet) {
+            isSpinning = false;
+            spinBtn.disabled = false;
+
+            if (type === 'LOSS') {
+                showStatus("Frozen out! Try again.", "#94a3b8");
+            } else {
+                let winAmount = 0;
+                let msg = "";
+
+                if (reward === "DOUBLE") {
+                    // Formula: Balance is already (Start - Bet). We add (Start - Bet) to double it.
+                    // Effectively balance = balance * 2
+                    winAmount = balance;
+                    balance += winAmount;
+                    msg = "BLIZZARD JACKPOT! BALANCE DOUBLED!";
+                } else {
+                    winAmount = reward;
+                    balance += winAmount;
+                    msg = `WINNER! +${winAmount}`;
+                }
+
+                showStatus(msg, "#38bdf8");
+                messageEl.classList.add('win-text');
+                setTimeout(() => messageEl.classList.remove('win-text'), 1000);
+            }
+
+            updateUI();
+
+            if (balance <= 0) {
+                showStatus("BANKRUPT! Refresh to restart.", "red");
+                spinBtn.disabled = true;
+            }
+        }
+
+        function showStatus(text, color) {
+            messageEl.textContent = text;
+            messageEl.style.color = color;
+        }
+    </script>
+</body>
+</html>
